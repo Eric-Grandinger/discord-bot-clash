@@ -2,8 +2,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 // Require the necessary discord.js classes
 const { Client, Events, GatewayIntentBits } = require('discord.js');
-// eslint-disable-next-line no-inline-comments
-const { token } = process.env.DISCORD_TOKEN; // using dotenv
+
+// using dotenv to get
+const { token } = process.env.DISCORD_TOKEN;
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
