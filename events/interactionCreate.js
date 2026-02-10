@@ -5,6 +5,7 @@ module.exports = {
 	async execute(interaction) {
 		if (!interaction.isChatInputCommand()) return;
 
+		console.log(' Command being run');
 		const command = interaction.client.commands.get(interaction.commandName);
 
 		if (!command) {
@@ -14,6 +15,7 @@ module.exports = {
 
 		const { cooldowns } = interaction.client; // WARNING may be wrong placment
 
+		console.log(cooldowns.get(command.data.name));
 		if (!cooldowns.has(command.data.name)) {
 			cooldowns.set(command.data.name, new Collection());
 		}
@@ -27,15 +29,17 @@ module.exports = {
   	const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
 
 			if (now < expirationTime) {
-				const expiredTimestamp = Math.round(expirationTime / 1_000);
+				const expiredTimestamp = Math.round(expirationTime / 1000); // before 1_000
 				return interaction.reply({
 					content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`,
 					flags: MessageFlags.Ephemeral,
 				});
 			}
-			timestamps.set(interaction.user.id, now);
-			setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
-		} // End of WARNING
+		}
+
+		timestamps.set(interaction.user.id, now);
+		setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
+		// End of WARNING
 		try {
 			await command.execute(interaction);
 		}
