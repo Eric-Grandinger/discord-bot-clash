@@ -24,7 +24,6 @@ module.exports = {
 		const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1_000;
 
 		if (timestamps.has(interaction.user.id)) {
-			// ...
   	const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
 
 			if (now < expirationTime) {

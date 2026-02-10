@@ -4,13 +4,12 @@ const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require(
 // using dotenv to get
 // eslint-disable-next-line no-inline-comments
 const token = process.env.DISCORD_TOKEN; // in the guide they use .config. does my way work?
-// eslint-disable-next-line no-inline-comments
-client.cooldowns = new Collection();// TODO may be placed wrong
 
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
+client.cooldowns = new Collection();
 // When the client is ready, run this code (only once).
 // The distinction between `client: Client<boolean>` and `readyClient: Client<true>` is important for TypeScript developers.
 // It makes some properties non-nullable.
