@@ -3,8 +3,9 @@
 
 A Discord bot that notifies server members about upcoming **League of Legends Clash** tournaments. The bot will accomplish this by utilising the Riot Games API.
 If a member chooses to subscribe they will receive:
-- A notification one week in advance. 
+- A notification one week in advance.
 - A reminder one hour before the start of Clash.
+
 To handle subscription status following commands will be utilized.
 - /subscribe
   - Receive notifications.
