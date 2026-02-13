@@ -13,8 +13,7 @@ module.exports = {
 			return;
 		}
 
-		const { cooldowns } = interaction.client; // WARNING may be wrong placment
-
+		const { cooldowns } = interaction.client;
 		console.log(cooldowns.get(command.data.name));
 		if (!cooldowns.has(command.data.name)) {
 			cooldowns.set(command.data.name, new Collection());
@@ -36,10 +35,8 @@ module.exports = {
 				});
 			}
 		}
-
 		timestamps.set(interaction.user.id, now);
 		setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
-		// End of WARNING
 		try {
 			await command.execute(interaction);
 		}
