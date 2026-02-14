@@ -28,13 +28,19 @@ async function readJson(path) {
 		throw err;
 	}
 }
-async function wrapper() {
-	const result = await readJson('./test.json');
-	console.log(result);
-}
-wrapper();
 
-function writeToJson(path, obj) {
-	return true;
+async function writeToJson(path, data) {
+	try {
+		await fs.writeFile(
+			path,
+			JSON.stringify(data, null, 2),
+			'utf-8',
+		);
+		return true;
+	}
+	catch (err) {
+		console.error(err);
+		return false;
+	}
 }
 module.exports = { readJson, writeToJson };
