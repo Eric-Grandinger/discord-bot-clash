@@ -1,20 +1,15 @@
-const fs = require('fs');
-const path = './subscribers.json';
-const { SlashCommandBuilder, userMention } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { readJson } = require('../../utils/jsonUtils.js');
+
+const path = 'utils/test.json'; // TOOD make it work in multiple guilds
 module.exports = {
 	cooldown: 5,
 	data: new SlashCommandBuilder().setName('subscriber-status').setDescription('Get your subscriber status'),
 	async execute(interaction) {
-		// TODO
-		// retrieve name
-		// check if the name is contained in json file
-		// if not
-		  // You are not subscribing
-		// if TURE
-		  // You are subscribing
-		// send message to confirm
-		await interaction.reply(userMention(interaction.user.id));
-		// const temp = false;
-		 // temp ? await interaction.reply(userMention(interaction.user.id)) : await interaction.reply(userMention(interaction.user.id));
+		const result = await readJson(path);
+		return interaction.reply({
+			content:result.data.includes(interaction.user.id) ? 'You are subscribed 🟩' : 'You are not subscribed 🟥',
+			flags: MessageFlags.Ephemeral,
+		});
 	},
 };
