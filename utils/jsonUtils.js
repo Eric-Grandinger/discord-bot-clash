@@ -1,21 +1,5 @@
 const fs = require('fs').promises;
 
-// function readJson(path) {
-//	try {
-//		const jsonString = fs.readFileSync(path, 'utf-8');
-//		return { exists: true, data: JSON.parse(jsonString) };
-//	}
-//	catch (err) {
-//		if (err.code === 'ENOENT') {
-//			return { exists: false, data: null };
-//		}
-//		throw err;
-//	}
-// }
-//
-
-// https://nodejs.org/en/learn/manipulating-files/reading-files-with-nodejs
-
 async function readJson(path) {
 	try {
 		const data = await fs.readFile(path, { encoding: 'utf8' });
@@ -28,7 +12,6 @@ async function readJson(path) {
 		throw err;
 	}
 }
-
 async function writeToJson(path, data) {
 	try {
 		await fs.writeFile(
