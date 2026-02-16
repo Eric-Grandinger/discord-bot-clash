@@ -11,17 +11,14 @@ To handle subscription status following commands will be utilized.
   - Receive notifications.
 - /unsubscribe
   - Stop receiving notifications.
-- /subscriber-status
-  - Recive your subscription status.  
 
 Built with **Node.js** and **discord.js**, based on the structure from the official guide:
-https://discordjs.guide/legacy/
+https://discordjs.guide/legacy/app-creation/
 
 ---
 ## Stack 
 - Node.js 
-- Discord.js
-- sqlite 
+- Discord.js 
 - Riot Games API (League of Legends)
 - Environment configuration via dotenv
 

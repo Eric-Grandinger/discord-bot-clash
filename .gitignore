@@ -3,8 +3,3 @@ node_modules
 config.json
 data/*
 utils/*.json
-# database
-*.sqlite
-*.sqlite-journal
-*.sqlite-wal
-*.db
