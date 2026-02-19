@@ -16,6 +16,18 @@ db.exec(schema, (err) => {
 		console.log('Database created from schema');
 	}
 });
+function cacheTournamentData() {
+}
+function retrieveTournamentData() {
+	// TODO what happens if no data exists
+}
+function signUpForTournament() {
+
+}
+function ForTheTournament() {
+
+}
+
 // const db = new sqlite3.Database('clash.db', sqlite3.OPEN_READWRITE, (err) => {
 // if (err) return console.error(err.message);
 // });
