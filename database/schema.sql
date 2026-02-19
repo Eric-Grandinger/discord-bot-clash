@@ -29,6 +29,10 @@ CREATE TABLE IF NOT EXISTS signedUpReserve(
   userId),
   FOREIGN KEY(idOfClash) REFERENCES clashDateCache(id)
 );
+/*CREATE FUNCTION function_name(param1, param2,) RETURNS return_type AS
+BEGIN
+        -- SQL statement
+END ;
 /*  TODO Add triggers to move a player if signed up is full to
    TODO Remove old data not nessisary any more
    */

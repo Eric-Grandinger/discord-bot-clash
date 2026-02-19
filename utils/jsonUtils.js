@@ -1,5 +1,5 @@
 const fs = require('fs').promises;
-
+// TODO add protection against race condition
 async function readJson(path) {
 	try {
 		const data = await fs.readFile(path, { encoding: 'utf8' });

@@ -2,9 +2,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
 // using dotenv to get
-// eslint-disable-next-line no-inline-comments
-const token = process.env.DISCORD_TOKEN; // in the guide they use .config. does my way work?
-
+const token = process.env.DISCORD_TOKEN;
+// Start database IS this the right place
+require('./database/db');
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
