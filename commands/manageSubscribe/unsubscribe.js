@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { readJson, writeToJson } = require('../../utils/jsonUtils.js');
 const path = 'utils/test.json'; // TOOD make it work in multiple guilds
+let message;
 module.exports = {
 	cooldown: 5,
 	data: new SlashCommandBuilder().setName('unsubscribe').setDescription('Stop receiving notifications'),
