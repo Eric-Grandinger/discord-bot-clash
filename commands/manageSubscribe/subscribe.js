@@ -1,11 +1,10 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { readJson, writeToJson } = require('../../utils/jsonUtils.js');
 
-// eslint-disable-next-line no-inline-comments
 const path = 'utils/test.json'; // TOOD make it work in multiple guilds
 async function write(data) {
-	const success = await writeToJson(path, data);
-	return success
+	const result = await writeToJson(path, data);
+	return result.success
 		? 'you are now subscribed'
 		: 'There was an error writing to the file';
 }
@@ -16,7 +15,7 @@ module.exports = {
 		let message;
 		const result = await readJson(path);
 
-		if (!result.exists) {
+		if (!result.success) {
 			message = await write([interaction.user.id]);
 		}
 		else if (result.data.includes(interaction.user.id)) {

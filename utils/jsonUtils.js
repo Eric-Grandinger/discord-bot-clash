@@ -3,11 +3,11 @@ const fs = require('fs').promises;
 async function readJson(path) {
 	try {
 		const data = await fs.readFile(path, { encoding: 'utf8' });
-		return { exists: true, data: JSON.parse(data) };
+		return { success: true, statusCode: null, data: JSON.parse(data) };
 	}
 	catch (err) {
 		if (err.code === 'ENOENT') {
-			return { exists: false, data: null };
+			return { success: false, statusCode: err.code, data: null };
 		}
 		throw err;
 	}
@@ -19,11 +19,11 @@ async function writeToJson(path, data) {
 			JSON.stringify(data, null, 2),
 			'utf-8',
 		);
-		return true;
+		return { success: true, statusCode : null };
 	}
 	catch (err) {
 		console.error(err);
-		return false;
+		return { success: false, statusCode : err.code };
 	}
 }
 module.exports = { readJson, writeToJson };

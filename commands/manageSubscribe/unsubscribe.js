@@ -7,7 +7,7 @@ module.exports = {
 	data: new SlashCommandBuilder().setName('unsubscribe').setDescription('Stop receiving notifications'),
 	async execute(interaction) {
 		const result = await readJson(path);
-		if (!result.exists || !result.data.includes(interaction.user.id)) {
+		if (!result.success || !result.data.includes(interaction.user.id)) {
 			message = 'You are already unsubscribed';
 		}
 		else if (result.data.includes(interaction.user.id)) {
