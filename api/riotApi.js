@@ -11,8 +11,8 @@ const api = axios.create({
 
 async function classifyError(error, location) { // TODO take a look att the formating of this. DO the function
 	if (error.response) {
-		console.log('RIOT_ERROR in ' + location + error.response);
-		return { success: false, errorType:'RIOT_ERROR', data: error.response.status };
+		console.log('RIOT_ERROR in ' + location, error.response.status);
+		return { success: false, errorType:error.response.status, data: null };
 	}
 	else if (error.request) {
 		console.log('NETWORK_ERROR in ' + location + error.request);
@@ -25,7 +25,7 @@ async function classifyError(error, location) { // TODO take a look att the form
 async function riotGet(endpoint) {
 	try {
 		const response = await api.get(endpoint);
-		return { success: true, statusCode: null, data: response.data };
+		return { success: true, errorType: null, data: response.data };
 	}
 	catch (error) {
 		// https://axios.rest/pages/advanced/error-handling
@@ -56,38 +56,36 @@ async function handleApiError(code) { // TODO can i use intigers ro should i use
 	}
 }
 async function retry(endpoint) {
-	const maxNumberRetries = 5;
-	let errorData = { success: false, errorType:null, data: null };
-	let retryDelay = 1000;
-
+	const maxNumberRetries = 3;
+	let retryDelay = 5000;
+	let result;
 	for (let nrRetries = 0; nrRetries < maxNumberRetries; nrRetries++) {
 		await delay(retryDelay);
 		retryDelay *= 2;
-		try {
-			const response = await api.get(endpoint);
-			return { success: true, statusCode: null, data: response.data };
+		result = await riotGet(endpoint);
+		if (result.success) {
+			return result;
 		}
-		catch (error) {
-			errorData = await classifyError(error, 'retry');
-			if (errorData.errorType === 'RIOT_ERROR') {
-				if (!await handleApiError(errorData.data)) { // TODO verify if this works
+		if (typeof result.errorType === 'number') {
+			if (!await handleApiError(result.errorType)) { // TODO verify if this works
 				  break;
-				}
 			}
 		}
 	}
-	return errorData;
+	return result;
 }
 async function getTournamentData() {
 	let result = await riotGet('/tournaments');
+	const possibleErrorCode = result.errorType;
+	delete result.errorType; // Only success and data needs to be sent
 	if (result.success) {
-		// TODO Should this data be converted to more usfull format?
-		return result.data;
-	}
-	if (await handleApiError(result.data)) { // TODO verify if this works
-		result = await retry('/tournaments');
 		return result;
 	}
-	return result.success;
+	if (await handleApiError(possibleErrorCode)) { // TODO verify if this works
+		result = await retry('/tournaments');
+		delete result.errorType; // Only success and data needs to be sent
+		return result;
+	}
+	return result;
 }
 module.exports = { getTournamentData };
