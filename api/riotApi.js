@@ -1,10 +1,15 @@
 const apiKey = process.env.RIOT_API_KEY;
-if (!apiKey) throw new Error('RIOT_API_KEY not set in environment');
+if (!apiKey) throw new Error('RIOT_API_KEY not set in .env');
 const axios = require('axios');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+// https://typevar.dev/articles/axios/axios
+const api = axios.create({
+	baseURL: 'https://euw1.api.riotgames.com/lol/clash/v1',
+	headers: { 'X-Riot-Token': apiKey },
+});
 
-async function classifyError(error, location) {
+async function classifyError(error, location) { // TODO take a look att the formating of this. DO the function
 	if (error.response) {
 		console.log('RIOT_ERROR in ' + location + error.response);
 		return { success: false, errorType:'RIOT_ERROR', data: error.response.status };
@@ -16,11 +21,6 @@ async function classifyError(error, location) {
 	console.error('UNKNOWN_ERROR in ' + location + error.message);
 	return { success: false, errorType:'UNKNOWN_ERROR', data: null };
 }
-// https://typevar.dev/articles/axios/axios
-const api = axios.create({
-	baseURL: 'https://euw1.api.riotgames.com/lol/clash/v1',
-	headers: { 'X-Riot-Token': apiKey },
-});
 // https://coderscratchpad.com/using-axios-with-async-await-modern-asynchronous-syntax/
 async function riotGet(endpoint) {
 	try {
@@ -57,7 +57,7 @@ async function handleApiError(code) { // TODO can i use intigers ro should i use
 }
 async function retry(endpoint) {
 	const maxNumberRetries = 5;
-	let errorType = null;
+	let errorData = { success: false, errorType:null, data: null };
 	let retryDelay = 1000;
 
 	for (let nrRetries = 0; nrRetries < maxNumberRetries; nrRetries++) {
@@ -68,11 +68,15 @@ async function retry(endpoint) {
 			return { success: true, statusCode: null, data: response.data };
 		}
 		catch (error) {
-			errorType = await classifyError(error, 'retry');
-			console.log(error.message + 'in retry ' + nrRetries);
+			errorData = await classifyError(error, 'retry');
+			if (errorData.errorType === 'RIOT_ERROR') {
+				if (!await handleApiError(errorData.data)) { // TODO verify if this works
+				  break;
+				}
+			}
 		}
 	}
-	return { success: false, errorType:errorType, data: null };
+	return errorData;
 }
 async function getTournamentData() {
 	let result = await riotGet('/tournaments');
@@ -84,6 +88,6 @@ async function getTournamentData() {
 		result = await retry('/tournaments');
 		return result;
 	}
-	return null;
+	return result.success;
 }
 module.exports = { getTournamentData };
