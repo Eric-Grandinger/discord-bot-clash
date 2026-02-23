@@ -15,8 +15,8 @@ async function classifyError(error, location) { // TODO take a look att the form
 		return { success: false, errorType:error.response.status, data: null };
 	}
 	else if (error.request) {
-		console.log('NETWORK_ERROR in ' + location + error.request);
-		return { success: false, errorType:'NETWORK_ERROR', data: null };
+		console.log('NETWORK_ERROR in ' + location + error.message);
+		return { success: false, errorType:error.code, data: null };
 	}
 	console.error('UNKNOWN_ERROR in ' + location + error.message);
 	return { success: false, errorType:'UNKNOWN_ERROR', data: null };
@@ -34,9 +34,9 @@ async function riotGet(endpoint) {
 	}
 }
 
-async function handleApiError(code) { // TODO can i use intigers ro should i use stringformat
+async function handleApiError(code) {
 	switch (code) {
-	case 429: // rate limit
+	case 429:
 		console.log('Rate limit exceeded. Trying again');
 		return true;
 	case 500:
@@ -51,12 +51,24 @@ async function handleApiError(code) { // TODO can i use intigers ro should i use
 	case 504:
 		console.log('Gateway timeout. Trying again');
 		return true;
+	case 'EAI_AGAIN':
+		console.log('DNS timeout. Trying again');
+		return true;
+	case 'ECONNRESET':
+		console.log('ECONNRESET. Trying again');
+		return true;
+	case 'ETIMEDOUT':
+		console.log('ETIMEDOUT. Trying again');
+		return true;
+	case 'ECONNREFUSED':
+		console.log('ECONNREFUSED. Trying again');
+		return true;
 	default:
 		return false;
 	}
 }
 async function retry(endpoint) {
-	const maxNumberRetries = 3;
+	const maxNumberRetries = 4;
 	let retryDelay = 5000;
 	let result;
 	for (let nrRetries = 0; nrRetries < maxNumberRetries; nrRetries++) {
@@ -88,4 +100,9 @@ async function getTournamentData() {
 	}
 	return result;
 }
+async function test() {
+	const result = await getTournamentData();
+	console.log(result);
+}
+test();
 module.exports = { getTournamentData };
