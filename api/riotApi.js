@@ -25,7 +25,8 @@ async function classifyError(error, location) { // TODO take a look att the form
 async function riotGet(endpoint) {
 	try {
 		const response = await api.get(endpoint);
-		return { success: true, errorType: null, data: response.data };
+		return response.data.length !== 0 ? { success: true, errorType: null, data: response.data } :
+			{ success: false, errorType: null, data: response.data };
 	}
 	catch (error) {
 		// https://axios.rest/pages/advanced/error-handling
@@ -69,7 +70,7 @@ async function handleApiError(code) {
 }
 async function retry(endpoint) {
 	const maxNumberRetries = 4;
-	let retryDelay = 5000;
+	let retryDelay = 60000;
 	let result;
 	for (let nrRetries = 0; nrRetries < maxNumberRetries; nrRetries++) {
 		await delay(retryDelay);
@@ -78,10 +79,8 @@ async function retry(endpoint) {
 		if (result.success) {
 			return result;
 		}
-		if (typeof result.errorType === 'number') {
-			if (!await handleApiError(result.errorType)) { // TODO verify if this works
-				  break;
-			}
+		if (!await handleApiError(result.errorType)) { // TODO verify if this works
+			break;
 		}
 	}
 	return result;

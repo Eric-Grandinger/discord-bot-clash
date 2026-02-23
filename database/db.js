@@ -16,7 +16,8 @@ db.exec(schema, (err) => {
 		console.log('Database created from schema');
 	}
 });
-function cacheTournamentData() {
+function dbCacheTournamentData() {
+	// TODO Add a trigger to the database that removes prev chached data
 }
 function retrieveTournamentData() {
 	// TODO what happens if no data exists
@@ -28,12 +29,4 @@ function ForTheTournament() {
 
 }
 
-// const db = new sqlite3.Database('clash.db', sqlite3.OPEN_READWRITE, (err) => {
-// if (err) return console.error(err.message);
-// });
-// TODO
-// Conect to database
-// Create the tables using scheme
-// Create functions that construct queries
-//    Retrice data
-//    Add data
+module.exports = { dbCacheTournamentData };

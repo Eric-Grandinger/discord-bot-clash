@@ -5,7 +5,6 @@ const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require(
 const token = process.env.DISCORD_TOKEN;
 // Start database IS this the right place
 require('./database/db');
-
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
