@@ -9,7 +9,7 @@ const api = axios.create({
 	headers: { 'X-Riot-Token': apiKey },
 });
 
-async function classifyError(error, location) { // TODO take a look att the formating of this. DO the function
+function classifyError(error, location) { // TODO take a look att the formating of this. DO the function
 	if (error.response) {
 		console.log('RIOT_ERROR in ' + location, error.response.status);
 		return { success: false, errorType:error.response.status, data: null };
@@ -35,38 +35,9 @@ async function riotGet(endpoint) {
 	}
 }
 
-async function handleApiError(code) {
-	switch (code) {
-	case 429:
-		console.log('Rate limit exceeded. Trying again');
-		return true;
-	case 500:
-		console.log('Internal server error. Trying again');
-		return true;
-	case 502:
-		console.log('Bad gateway. Trying again');
-		return true;
-	case 503:
-		console.log('Service unavailable. Trying again');
-		return true;
-	case 504:
-		console.log('Gateway timeout. Trying again');
-		return true;
-	case 'EAI_AGAIN':
-		console.log('DNS timeout. Trying again');
-		return true;
-	case 'ECONNRESET':
-		console.log('ECONNRESET. Trying again');
-		return true;
-	case 'ETIMEDOUT':
-		console.log('ETIMEDOUT. Trying again');
-		return true;
-	case 'ECONNREFUSED':
-		console.log('ECONNREFUSED. Trying again');
-		return true;
-	default:
-		return false;
-	}
+function handleApiError(code) {
+	const codesToRetry = [ 429, 500, 502, 503, 504, 'EAI_AGAIN', 'ECONNRESET', 'ETIMEDOUT', 'ECONNREFUSED'];
+	return codesToRetry.includes(code);
 }
 async function retry(endpoint) {
 	const maxNumberRetries = 4;
@@ -85,23 +56,32 @@ async function retry(endpoint) {
 	}
 	return result;
 }
-async function getTournamentData() {
-	let result = await riotGet('/tournaments');
+async function getData(endpoint) {
+	let result = await riotGet(endpoint);
 	const possibleErrorCode = result.errorType;
 	delete result.errorType; // Only success and data needs to be sent
 	if (result.success) {
 		return result;
 	}
 	if (await handleApiError(possibleErrorCode)) { // TODO verify if this works
-		result = await retry('/tournaments');
+		result = await retry(endpoint);
 		delete result.errorType; // Only success and data needs to be sent
 		return result;
 	}
 	return result;
 }
+async function getTournamentData() {
+	const result = await getData('/tournaments');
+	return result;
+}
 async function test() {
 	const result = await getTournamentData();
-	console.log(result);
+	// console.log(result);
+	// TEMP
+	console.log(result.data[0].schedule);
+	delete result.data[0].schedule;
+	console.log(result.data[0]);
+
 }
 test();
 module.exports = { getTournamentData };
