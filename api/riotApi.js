@@ -39,49 +39,22 @@ function handleApiError(code) {
 	const codesToRetry = [ 429, 500, 502, 503, 504, 'EAI_AGAIN', 'ECONNRESET', 'ETIMEDOUT', 'ECONNREFUSED'];
 	return codesToRetry.includes(code);
 }
-async function retry(endpoint) {
-	const maxNumberRetries = 4;
-	let retryDelay = 60000;
-	let result;
-	for (let nrRetries = 0; nrRetries < maxNumberRetries; nrRetries++) {
-		await delay(retryDelay);
-		retryDelay *= 2;
-		result = await riotGet(endpoint);
-		if (result.success) {
-			return result;
-		}
-		if (!await handleApiError(result.errorType)) { // TODO verify if this works
-			break;
-		}
-	}
-	return result;
-}
-async function getData(endpoint) {
+async function getData(endpoint, nrRetries, delayMs) {
 	let result = await riotGet(endpoint);
 	const possibleErrorCode = result.errorType;
-	delete result.errorType; // Only success and data needs to be sent
 	if (result.success) {
-		return result;
+		return { success: result.success, data: result.data };
 	}
-	if (await handleApiError(possibleErrorCode)) { // TODO verify if this works
-		result = await retry(endpoint);
-		delete result.errorType; // Only success and data needs to be sent
-		return result;
+	console.log(result.errorType);
+	if (handleApiError(possibleErrorCode) && nrRetries > 0) {
+		await delay(delayMs);
+		result = await getData(endpoint, nrRetries - 1, delayMs * 2);
+		return { success: result.success, data: result.data };
 	}
-	return result;
+	return { success: result.success, data: result.data };
 }
 async function getTournamentData() {
-	const result = await getData('/tournaments');
+	const result = await getData('/tournaments', 4, 7500);
 	return result;
 }
-async function test() {
-	const result = await getTournamentData();
-	// console.log(result);
-	// TEMP
-	console.log(result.data[0].schedule);
-	delete result.data[0].schedule;
-	console.log(result.data[0]);
-
-}
-test();
 module.exports = { getTournamentData };
