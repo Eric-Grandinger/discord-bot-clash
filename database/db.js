@@ -19,13 +19,16 @@ db.exec(schema, (err) => {
 function dbCacheTournamentData() {
 	// TODO Add a trigger to the database that removes prev chached data
 }
-function retrieveTournamentData() {
+function getTournamentData() {
 	// TODO what happens if no data exists
 }
 function signUpForTournament() {
 
 }
 function ForTheTournament() {
+
+}
+function saveError(error) {
 
 }
 

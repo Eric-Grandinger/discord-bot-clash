@@ -57,4 +57,15 @@ async function getTournamentData() {
 	const result = await getData('/tournaments', 4, 7500);
 	return result;
 }
+async function test() {
+	const result = await getTournamentData();
+	// console.log(result);
+	// TEMP
+	console.log(result.data[0]);
+	console.log(result.data[0].schedule);
+	delete result.data[0].schedule;
+	console.log(result.data[0]);
+
+}
+test();
 module.exports = { getTournamentData };
