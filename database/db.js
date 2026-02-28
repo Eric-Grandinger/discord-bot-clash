@@ -25,11 +25,17 @@ function getTournamentData() {
 function signUpForTournament() {
 
 }
-function ForTheTournament() {
+function optOutForTournament() {
+
+}
+function isNotificationTimerSet() {
+// Return true/fakse
+}
+function getStartTime(error) {
 
 }
 function saveError(error) {
 
 }
 
-module.exports = { dbCacheTournamentData };
+module.exports = { dbCacheTournamentData, isNotificationTimerSet };

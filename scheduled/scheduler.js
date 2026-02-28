@@ -1,21 +1,28 @@
 const schedule = require('node-schedule');
-const { getTournamentData } = require('../api/riotApi.js'); // TODO is test REMOVE
-const { dbCacheTournamentData } = require('./cacheRiotData.js');
-const rule = new schedule.RecurrenceRule();
-// rule.second = 30;
-/* rule.minute = [0, new schedule.Range(1, 60)];
-const job = schedule.scheduleJob(rule, function() {
-	console.log('The answer to life, the universe, and everything!');
-});
-*/
-const job = schedule.scheduleJob('*/5 * * * * *', async function() { // WARNING is test REMOVE
-	const result = await getTournamentData();
-	console.log(result.data[0]);
-});
-console.log('Test');
+const { dbCacheTournamentData, isNotificationTimerSet } = require('./cacheRiotData.js');
+const weekInMs = 604800000;
+const oneHourInMs = 3600000;
+const callDbCacheTournamentData = schedule.scheduleJob('0 */12 * * *', async function() {
+	await dbCacheTournamentData();
 
+	if (await isNotificationTimerSet()) {
+		//
+	}
 
-const callDbCacheTournamentData = schedule.scheduleJob('* */12 * * *', function() {
-	dbCacheTournamentData();
 	// TODO improve this logic so that a custom timer is set to nofify one week before clash or if time < week but not notified
 });
+async function setNotificationTimer(startTime) {
+	for (let i = 0; i < startTime.length; i++) {
+		const convertedTime = startTime[i];
+		const scheduleDateWeekBefore = new Date(startTime[i] - weekInMs);
+		const scheduleDateHourBefore = new Date(startTime[i] - oneHourInMs);
+
+		schedule.scheduleJob(scheduleDateWeekBefore, function() {
+			console.log('temp');
+		});
+
+		schedule.scheduleJob(scheduleDateHourBefore, function() {
+			console.log('temp');
+		});
+	}
+}
