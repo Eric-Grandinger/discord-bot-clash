@@ -1,5 +1,5 @@
-const { getTournamentData } = require('../../api/riotApi.js');
-const { dbCacheTournamentData } = require('../../database/db.js');
+const { getTournamentData } = require('../api/riotApi.js');
+const { dbCacheTournamentData } = require('../database/db.js');
 
 async function cacheTurnamentData() {
 	const result = await getTournamentData();

@@ -16,8 +16,10 @@ db.exec(schema, (err) => {
 		console.log('Database created from schema');
 	}
 });
-function dbCacheTournamentData() {
+function dbCacheTournamentData(clashData, clashSchedule) {
 	// TODO Add a trigger to the database that removes prev chached data
+	const insertQueryClashData =
+  'INSERT OR REPLACE INTO clashDateCache (id, themeId, nameKey) VALUES (value1, value2, value3);';
 }
 function getTournamentData() {
 	// TODO what happens if no data exists
