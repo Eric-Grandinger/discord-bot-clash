@@ -30,7 +30,7 @@ async function riotGet(endpoint) {
 	}
 	catch (error) {
 		// https://axios.rest/pages/advanced/error-handling
-		const returnData = await classifyError(error, 'riotGet');
+		const returnData = classifyError(error, 'riotGet');
 		return returnData;
 	}
 }
@@ -41,15 +41,9 @@ function handleApiError(code) {
 }
 async function getData(endpoint, nrRetries, delayMs) {
 	let result = await riotGet(endpoint);
-	const possibleErrorCode = result.errorType;
-	if (result.success) {
-		return { success: result.success, data: result.data };
-	}
-	console.log(result.errorType);
-	if (handleApiError(possibleErrorCode) && nrRetries > 0) {
+	if (!result.success && handleApiError(result.errorType) && nrRetries > 0) {
 		await delay(delayMs);
 		result = await getData(endpoint, nrRetries - 1, delayMs * 2);
-		return { success: result.success, data: result.data };
 	}
 	return { success: result.success, data: result.data };
 }
@@ -57,15 +51,4 @@ async function getTournamentData() {
 	const result = await getData('/tournaments', 4, 7500);
 	return result;
 }
-async function test() {
-	const result = await getTournamentData();
-	// console.log(result);
-	// TEMP
-	console.log(result.data[0]);
-	console.log(result.data[0].schedule);
-	delete result.data[0].schedule;
-	console.log(result.data[0]);
-
-}
-test();
 module.exports = { getTournamentData };
