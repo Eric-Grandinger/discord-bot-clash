@@ -1,9 +1,14 @@
 const schedule = require('node-schedule');
 const weekInMs = (7 * 24 * 60 * 60 * 1000);
 const oneHourInMs = 60 * 60 * 1000; // 3600000 before
-const notifications = [];
+const notifications = new Map();
+
 function isNotificationTimerSet(tournamentId) {
-	return notifications.includes(tournamentId);
+	if (!notifications.has(tournamentId)) {
+		return false;
+	}
+	const jobs = notifications.get(tournamentId);
+	return jobs.jobWeek !== null && jobs.jobHour !== null; // if ether is missing return false
 }
 function setNotificationTimer(startTimes, tournamentId) {
 	for (let i = 0; i < startTimes.length; i++) {
@@ -18,8 +23,7 @@ function setNotificationTimer(startTimes, tournamentId) {
 		const jobHour = schedule.scheduleJob(scheduleDateHourBefore, function() {
 			console.log('temp');
 		});
-		notifications.push({ tournamentId, jobHour });
-		notifications.push({ tournamentId, jobWeek });
+		notifications.set(tournamentId, { jobWeek, jobHour });
 	}
 }
-module.export = { setNotificationTimer, isNotificationTimerSet };
+module.exports = { setNotificationTimer, isNotificationTimerSet };
