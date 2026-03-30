@@ -12,8 +12,8 @@ async function cacheTurnamentData() {
 			const { schedule, ...tournament } = item;
 			tournaments.push(tournament);
 			schedules.push(...schedule);
-			if (isNotificationTimerSet(schedule.id)) {
-				setNotificationTimer(schedule.id, schedule.registrationTime);
+			if (!isNotificationTimerSet(schedule.id)) {
+				setNotificationTimer(schedule.id, schedule.registrationTime);// TODO Error is here
 			}
 		}
 		catch (error) {

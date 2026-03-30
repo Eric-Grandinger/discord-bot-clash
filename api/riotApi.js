@@ -9,7 +9,7 @@ const api = axios.create({
 	headers: { 'X-Riot-Token': apiKey },
 });
 
-function classifyError(error, location) { // TODO take a look att the formating of this. DO the function
+function classifyError(error, location) { // TODO take a look at the formation of this. DO the function
 	if (error.response) {
 		console.log('RIOT_ERROR in ' + location, error.response.status);
 		return { success: false, errorType:error.response.status, data: null };

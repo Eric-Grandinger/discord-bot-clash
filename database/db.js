@@ -60,4 +60,10 @@ function saveError(error) {
 
 }
 
+function getSubscribedUser(userID) {
+
+}
+function getAllSubscribers() 
+
+}
 module.exports = { dbCacheTournamentData, isNotificationTimerSet };
