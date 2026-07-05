@@ -1,14 +1,18 @@
 const schedule = require('node-schedule');
 const { cacheTurnamentData } = require('./cacheRiotData.js');
-console.log('Test');
-async function test() {
-	await cacheTurnamentData();
-}
-test();
-const callDbCacheTournamentData = schedule.scheduleJob('* * * * *', async function() { //  '0 */6 * * *'
-	 cacheTurnamentData();
-	// 1234 is temp. in final it will be the id of the tornbanebt
-	// TODO. May need to move this logic
+const { saveError } = require('../database/db.js');
+const { notifyUsersWeekBefore, notifyUsersHourBefore } = require('./notificationTimer.js');
 
-	// TODO improve this logic so that a custom timer is set to nofify one week before clash or if time < week but not notified
-});
+function createJob(cronPattern, nameOfTask, task) {
+	return schedule.scheduleJob(cronPattern, async function() {
+		try {
+			await task();
+		}
+		catch (error) {
+			saveError('In scheduler.js fun createJob Task ' + nameOfTask, error);
+		}
+	});
+}
+createJob('0 */6 * * *', 'cacheTurnamentData', cacheTurnamentData);
+createJob('*/10 14-23 * * 5-7', 'weekBeforeNotificationJob', notifyUsersWeekBefore);
+createJob('*/10 14-23 * * 5-7', 'hourBeforeNotificationJob', notifyUsersHourBefore);
