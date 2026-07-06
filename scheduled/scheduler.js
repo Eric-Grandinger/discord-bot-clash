@@ -4,6 +4,7 @@ const { saveError } = require('../database/db.js');
 const { notifyUsersWeekBefore, notifyUsersHourBefore } = require('./notificationTimer.js');
 
 function createJob(cronPattern, nameOfTask, task) {
+	console.log('Started job ' + nameOfTask + ' that runns ' + cronPattern);
 	return schedule.scheduleJob(cronPattern, async function() {
 		try {
 			await task();
@@ -14,5 +15,5 @@ function createJob(cronPattern, nameOfTask, task) {
 	});
 }
 createJob('0 */6 * * *', 'cacheTurnamentData', cacheTurnamentData);
-createJob('*/10 14-23 * * 5-7', 'weekBeforeNotificationJob', notifyUsersWeekBefore);
+createJob('0 14-23 * * 5-7', 'weekBeforeNotificationJob', notifyUsersWeekBefore);
 createJob('*/10 14-23 * * 5-7', 'hourBeforeNotificationJob', notifyUsersHourBefore);
