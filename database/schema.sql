@@ -2,19 +2,20 @@ CREATE TABLE IF NOT EXISTS clashDataCache(
   id INTEGER PRIMARY KEY,
   themeId INTEGER NOT NULL,
   nameKey TEXT NOT NULL,
-  notifiedUsers INTEGER DEFAULT 0  
-  CHECK(notifiedUsers IN (0,1))
+  notifiedUsersDayBefore INTEGER DEFAULT 0,
+  notifiedUsersHouerBefore INTEGER DEFAULT 0,  
+  CHECK(notifiedUsersDayBefore IN (0,1)),
+  CHECK(notifiedUsersHouerBefore IN (0,1))
 );
 
 CREATE TABLE IF NOT EXISTS clashScheduleCache(
   idOfClash INTEGER PRIMARY KEY,
   registrationTime INTEGER NOT NULL,
   startTime INTEGER NOT NULL,
-  cancelled INTEGER NOT NULL
-  CHECK(cancelled IN (0,1)),
-  scheduleSet INTEGER DEFAULT 0
-  CHECK(scheduleSet IN (0,1)),
-  FOREIGN KEY(idOfClash) REFERENCES clashDataCache(id)
+  cancelled INTEGER NOT NULL,
+  scheduleSet INTEGER DEFAULT 0,
+  FOREIGN KEY(idOfClash) REFERENCES clashDataCache(id),
+  CHECK(cancelled IN (0,1))
 );
 CREATE TABLE IF NOT EXISTS signedUp(
   idOfClash INTEGER NOT NULL,
@@ -29,7 +30,8 @@ CREATE TABLE IF NOT EXISTS signedUpReserve(
   FOREIGN KEY(idOfClash) REFERENCES clashDataCache(id)
 );
 CREATE TABLE IF NOT EXISTS errorInformation(
+  location TEXT,
   errorMsg TEXT,
   time TEXT,
-  PRIMARY KEY(errorMsg,time)
+  id INTEGER PRIMARY KEY AUTOINCREMENT
 );
