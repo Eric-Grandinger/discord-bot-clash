@@ -1,28 +1,26 @@
 const { getTournamentData } = require('../api/riotApi.js');
-const { dbCacheTournamentData } = require('../database/db.js');
-const { setNotificationTimer, isNotificationTimerSet } = require('./notificationTimer.js');
+const { dbCacheTournamentData, tournamentExistsAsync, saveError } = require('../database/db.js');
 
 async function cacheTurnamentData() {
 	const result = await getTournamentData();
 	const tournaments = [];
 	const schedules = [];
-	if (!result.success) return;
-	for (const item of result.data) {
-		try {
+	try {
+		if (!result.success) return;
+		if (!(await tournamentExistsAsync())) {
+		// TODO send notification of upcoming event
+		}
+		for (const item of result.data) {
 			const { schedule, ...tournament } = item;
 			tournaments.push(tournament);
 			schedules.push(...schedule);
-			if (!isNotificationTimerSet(schedule.id)) {
-				setNotificationTimer(schedule.id, schedule.registrationTime);// TODO Error is here
-			}
 		}
-		catch (error) {
-			console.log(error.message + ' In cacheTurnamentData');
-		}
+		console.log(tournaments);
+		console.log(schedules);
+		dbCacheTournamentData(tournaments, schedules);
 	}
-	console.log(tournaments);
-	console.log(schedules);
-	dbCacheTournamentData(tournaments, schedules);
-
+	catch (error) {
+		saveError('In cacheTurnamentData', error);
+	}
 }
 module.exports = { cacheTurnamentData };

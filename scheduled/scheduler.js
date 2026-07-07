@@ -1,7 +1,7 @@
 const schedule = require('node-schedule');
 const { cacheTurnamentData } = require('./cacheRiotData.js');
 const { saveError } = require('../database/db.js');
-const { notifyUsersWeekBefore, notifyUsersHourBefore } = require('./notificationTimer.js');
+const { notifyUsersWeekBefore, notifyUsersHourBefore } = require('./notificationLogic.js');
 
 function createJob(cronPattern, nameOfTask, task) {
 	console.log('Started job ' + nameOfTask + ' that runns ' + cronPattern);
