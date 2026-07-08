@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const messages = require('./utils/messages.js');
+const messages = require('./utils/messages.js'); // row 15
 
 // after client is created
 const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
@@ -13,7 +13,7 @@ require('./scheduled/scheduler.js');
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 messages.init(client);// Gives the "client" to messages organizer
-client.cooldowns = new Collection();
+// client.cooldowns = new Collection();
 // When the client is ready, run this code (only once).
 // The distinction between `client: Client<boolean>` and `readyClient: Client<true>` is important for TypeScript developers.
 // It makes some properties non-nullable.

@@ -2,6 +2,7 @@ const apiKey = process.env.RIOT_API_KEY;
 if (!apiKey) throw new Error('RIOT_API_KEY not set in .env');
 const axios = require('axios');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const { saveError } = require('../database/db.js');
 
 // https://typevar.dev/articles/axios/axios
 const api = axios.create({
