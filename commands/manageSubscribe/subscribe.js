@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { readJson, writeToJson } = require('../../utils/jsonUtils.js');
-
+const { signeUpForNotifications, isUserSignedUpForNotifications } = require('../../database/db.js');
 const path = 'utils/test.json'; // TOOD make it work in multiple guilds
 async function write(data) {
 	const result = await writeToJson(path, data);
@@ -13,7 +13,14 @@ module.exports = {
 	data: new SlashCommandBuilder().setName('subscribe').setDescription('Subscribe to get notified about upcoming events'),
 	async execute(interaction) {
 		let message;
-		const result = await readJson(path);
+		if (await (isUserSignedUpForNotifications(interaction.user.id))) {
+			message = 'you are already subscribed';
+		}
+		else {
+			await signeUpForNotifications(interaction.user.id);
+			message = 'you are now subscribed';
+		}
+		/* const result = await readJson(path);
 
 		if (!result.success) {
 			message = await write([interaction.user.id]);
@@ -24,7 +31,7 @@ module.exports = {
 		else {
 			result.data.push(interaction.user.id);
 			message = await write(result.data);
-		}
+		}*/
 		return interaction.reply({
 			content: message,
 			flags: MessageFlags.Ephemeral,
