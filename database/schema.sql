@@ -17,7 +17,11 @@ CREATE TABLE IF NOT EXISTS clashScheduleCache(
   FOREIGN KEY(idOfClash) REFERENCES clashDataCache(id),
   CHECK(cancelled IN (0,1))
 );
-CREATE TABLE IF NOT EXISTS signedUp(
+CREATE TABLE IF NOT EXISTS signeUpForNotifications(
+  userId TEXT,
+  PRIMARY KEY(userId)
+);
+CREATE TABLE IF NOT EXISTS signUp(
   idOfClash INTEGER NOT NULL,
   userId TEXT NOT NULL,
   PRIMARY KEY(idOfClash,userId),
