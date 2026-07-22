@@ -24,10 +24,14 @@ async function notifyNewClash(idOfClash) {
 	try {
 		const users = await getAllSubscribersAsync();
 		const mentions = users.map(user => `<@${user.userId}>`).join(' ');
-
+		const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 		const clashData = await getTournamentData(idOfClash);
-		const startTime = new Date(clashData.startTime).toLocaleString();
-		const registrationTime = new Date(clashData.registrationTime).toLocaleString();
+		const d = new Date(clashData.startTime);
+
+		const registrationTime = new Date(clashData.registrationTime).toLocaleTimeString();
+		const startTime = d.toLocaleTimeString();
+		const weekdayOfClash = weekday[d.getDay()];
+		const clashDate = d.toLocaleDateString();
 
 		const row = new ActionRowBuilder().addComponents(
 			new ButtonBuilder()
@@ -42,16 +46,17 @@ async function notifyNewClash(idOfClash) {
 				.setCustomId('clash_decline')
 				.setLabel('Can\'t make it')
 				.setStyle(ButtonStyle.Danger),
-		);// Secondary
+
+		);
 		const embed = new EmbedBuilder()
 			.setColor(0x5865f2)
 			.addFields(
-				{ name: 'Lock in starts', value: registrationTime, inline: true },
-				{ name: 'Lock in ends', value: startTime, inline: true },
-				{ name: 'Notifying', value: mentions },
+				{ name: 'Day / Date', value: weekdayOfClash + ' : ' + clashDate, inline: true },
+				{ name: 'Lock in starts / ends', value: `${registrationTime} → ${startTime}`, inline: true },
+				{ name: 'Notifying', value: mentions, inline: false },
 			)
 			.setTitle(clashData.nameKey)
-			.setImage('https://oyster.ignimgs.com/wordpress/stg.ign.com/2018/05/LOL-Clash.png')
+			.setImage('https://oyster.ignimgs.com/wordpress/stg.ign.com/2018/05/LOL-Clash.png')// TODO Use theam id to get a URL or stored image. If no id use this image
 		;
 		const channel = await client.channels.fetch(channelId);
 		await channel.send({
